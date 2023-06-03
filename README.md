@@ -5,7 +5,8 @@
 ## How to use
 
 ```pnpm install
-pnpm run dev```
+pnpm run dev
+```
 
 The server is now running on `http://localhost:3000`. You can send the API requests implemented in `index.js`, e.g. [`http://localhost:3000/feed`](http://localhost:3000/feed).
 
