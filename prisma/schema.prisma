@@ -22,3 +22,13 @@ model Post {
   published Boolean  @default(false)
   viewCount Int      @default(0)
 }
+
+model Opportunities {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  status            String @db.String @index
+  opportunityName   String @db.String @index
+  companyName       String @db.String @index
+  requirements      String @db.String
+  additionalDetail  String @db.String
+  emailLink         String @db.String
+}
