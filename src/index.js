@@ -1,11 +1,26 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
-const { MongoClient } = require('mongodb');
 
 const prisma = new PrismaClient();
 const app = express();
 const port = 3000;
-const mongoUri = "mongodb+srv://vanderbiltdatascience:<password>@cluster0.udbnkv3.mongodb.net/your-database-name?retryWrites=true&w=majority";
+
+require('dotenv').config();
+const mongoUri = process.env.MONGO;
+
+// Connect to MongoDB with Prisma
+prisma.$connect()
+  .then(() => {
+    console.log('Connected to MongoDB successfully!');
+    // Start the Express server after the database connection is established
+    app.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Failed to connect to MongoDB:', error);
+    process.exit(1);
+  });
 
 app.use(express.json());
 
@@ -21,23 +36,4 @@ app.post('/opportunities', async (req, res) => {
     data: { status, opportunityName, companyName, requirements, additionalDetail, emailLink },
   });
   res.json(opportunity);
-});
-
-// Connect to MongoDB and start the Express server
-MongoClient.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
-  if (err) {
-    console.error('Failed to connect to MongoDB:', err);
-    process.exit(1);
-  }
-
-  console.log('Connected to MongoDB successfully!');
-
-  const db = client.db('main-backend.opportunities');
-
-  // Pass the MongoDB database instance to the routes
-  app.locals.db = db;
-
-  app.listen(port, () => {
-    console.log(`Server is running on http://localhost:3000`);
-  });
 });
